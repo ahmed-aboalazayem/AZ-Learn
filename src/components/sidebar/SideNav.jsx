@@ -4,7 +4,11 @@ const navLinks = [
     { icon: "dashboard", label: "Dashboard", path: "/dashboard" },
     { icon: "menu_book", label: "My Courses", path: "/dashboard/courses" },
     { icon: "add_circle", label: "Create New", path: "/dashboard/courses/new" },
-    { icon: "leaderboard", label: "Leaderboard", path: "/dashboard/leaderboard" },
+    {
+        icon: "leaderboard",
+        label: "Leaderboard",
+        path: "/dashboard/leaderboard",
+    },
 ];
 
 const bottomLinks = [
@@ -53,11 +57,18 @@ export default function SideNav() {
                         {({ isActive }) => (
                             <>
                                 {isActive && (
-                                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-violet-500 rounded-r-full" />
+                                    <div className="absolute left-0 inset-y-0 my-auto w-1 h-6 bg-violet-500 rounded-r-full shadow-[0_0_10px_rgba(139,92,246,0.3)]" />
                                 )}
                                 <span
                                     className="material-symbols-outlined text-[20px]"
-                                    style={isActive ? { fontVariationSettings: "'FILL' 1" } : {}}
+                                    style={
+                                        isActive
+                                            ? {
+                                                  fontVariationSettings:
+                                                      "'FILL' 1",
+                                              }
+                                            : {}
+                                    }
                                 >
                                     {link.icon}
                                 </span>

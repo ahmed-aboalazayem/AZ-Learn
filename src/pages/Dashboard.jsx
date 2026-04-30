@@ -1,7 +1,11 @@
+import { Button } from "flowbite-react";
+
 const Dashboard = () => {
     return (
         <div>
-            <h1>kdsfnadoslfnds</h1>
+            <Button color="purple" className="px-5 py-5 ml-10 mt-10">
+                test
+            </Button>
         </div>
     );
 };
