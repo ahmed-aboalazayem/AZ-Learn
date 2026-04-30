@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: "Outfit", sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+    width: 100%;
+    min-height: 100vh;
+    text-align: left;
+}
+
+/* Custom utility classes */
+.shadow-soft {
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+}
+
+.ai-glow {
+    box-shadow: 0 0 15px rgba(108, 99, 255, 0.15);
+}
+
+/* Global link reset */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+
+/* Material Symbols */
+
+/* Material Symbols */
+.material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+}
