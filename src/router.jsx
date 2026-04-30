@@ -12,6 +12,7 @@ import Leaderboard from "./pages/Leaderboard";
 import Settings from "./pages/Settings";
 import CreateNew from "./pages/CreateNew";
 import Upgrade from "./pages/Upgrade";
+import CoursePlayer from "./pages/CoursePlayer";
 
 export const router = createBrowserRouter([
     // 🌍 Public Routes
@@ -47,6 +48,10 @@ export const router = createBrowserRouter([
                     {
                         path: "new",
                         element: <CreateNew />,
+                    },
+                    {
+                        path: ":id",
+                        element: <CoursePlayer />,
                     },
                 ],
             },
