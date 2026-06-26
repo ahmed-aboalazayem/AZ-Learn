@@ -1,31 +1,53 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
+import { getDbCourses, saveDbCourse, deleteDbCourse } from "../services/dbService";
 
 const CourseContext = createContext(null);
 
 const STORAGE_KEY = "az_learn_courses";
 
-function loadCourses() {
-    try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        return raw ? JSON.parse(raw) : [];
-    } catch {
-        return [];
-    }
-}
-
-function saveCourses(courses) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
-}
-
 export function CourseProvider({ children }) {
-    const [courses, setCourses] = useState(loadCourses);
+    const [courses, setCourses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
-    // Persist on every change
+    // 1. Initial Load: Load courses from IndexedDB (with LocalStorage migration fallback)
     useEffect(() => {
-        saveCourses(courses);
-    }, [courses]);
+        const initCourses = async () => {
+            try {
+                let dbList = await getDbCourses();
 
-    const addCourse = useCallback((courseData) => {
+                // If DB is empty, check if we have legacy courses in LocalStorage to migrate
+                if (dbList.length === 0) {
+                    const legacyRaw = localStorage.getItem(STORAGE_KEY);
+                    if (legacyRaw) {
+                        try {
+                            const legacyList = JSON.parse(legacyRaw);
+                            if (Array.isArray(legacyList) && legacyList.length > 0) {
+                                for (const course of legacyList) {
+                                    await saveDbCourse(course);
+                                }
+                                dbList = legacyList;
+                                console.log("Migrated courses from LocalStorage to IndexedDB successfully.");
+                            }
+                        } catch (e) {
+                            console.error("Failed to parse legacy LocalStorage courses:", e);
+                        }
+                        // Clear the legacy key to avoid re-migration
+                        localStorage.removeItem(STORAGE_KEY);
+                    }
+                }
+
+                setCourses(dbList);
+            } catch (err) {
+                console.error("Failed to load courses from IndexedDB:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        initCourses();
+    }, []);
+
+    const addCourse = useCallback(async (courseData) => {
         const newCourse = {
             ...courseData,
             id: courseData.id || crypto.randomUUID(),
@@ -36,12 +58,27 @@ export function CourseProvider({ children }) {
                 currentLessonId: null,
             },
         };
-        setCourses((prev) => [newCourse, ...prev]);
-        return newCourse.id;
+
+        try {
+            await saveDbCourse(newCourse);
+            setCourses((prev) => [newCourse, ...prev]);
+            return newCourse.id;
+        } catch (err) {
+            console.error("Failed to save new course to IndexedDB:", err);
+            // Fallback: still add to state so UI functions, even if DB fails
+            setCourses((prev) => [newCourse, ...prev]);
+            return newCourse.id;
+        }
     }, []);
 
-    const deleteCourse = useCallback((id) => {
-        setCourses((prev) => prev.filter((c) => c.id !== id));
+    const deleteCourse = useCallback(async (id) => {
+        try {
+            await deleteDbCourse(id);
+            setCourses((prev) => prev.filter((c) => c.id !== id));
+        } catch (err) {
+            console.error("Failed to delete course from IndexedDB:", err);
+            setCourses((prev) => prev.filter((c) => c.id !== id));
+        }
     }, []);
 
     const getCourse = useCallback(
@@ -51,7 +88,7 @@ export function CourseProvider({ children }) {
         [courses],
     );
 
-    const updateProgress = useCallback((courseId, lessonId, done) => {
+    const updateProgress = useCallback(async (courseId, lessonId, done) => {
         setCourses((prev) =>
             prev.map((c) => {
                 if (c.id !== courseId) return c;
@@ -62,7 +99,7 @@ export function CourseProvider({ children }) {
                 // Clean up false entries
                 if (!done) delete completedLessons[lessonId];
 
-                return {
+                const updated = {
                     ...c,
                     progress: {
                         ...c.progress,
@@ -70,18 +107,32 @@ export function CourseProvider({ children }) {
                         currentLessonId: lessonId,
                     },
                 };
+
+                // Save to IndexedDB asynchronously
+                saveDbCourse(updated).catch((err) => {
+                    console.error("Failed to sync course progress to IndexedDB:", err);
+                });
+
+                return updated;
             }),
         );
     }, []);
 
-    const setCurrentLesson = useCallback((courseId, lessonId) => {
+    const setCurrentLesson = useCallback(async (courseId, lessonId) => {
         setCourses((prev) =>
             prev.map((c) => {
                 if (c.id !== courseId) return c;
-                return {
+                const updated = {
                     ...c,
                     progress: { ...c.progress, currentLessonId: lessonId },
                 };
+
+                // Save to IndexedDB asynchronously
+                saveDbCourse(updated).catch((err) => {
+                    console.error("Failed to sync current lesson to IndexedDB:", err);
+                });
+
+                return updated;
             }),
         );
     }, []);
@@ -122,6 +173,7 @@ export function CourseProvider({ children }) {
 
     const value = {
         courses,
+        loading,
         addCourse,
         deleteCourse,
         getCourse,

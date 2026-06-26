@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { ChevronLeft, Star, Share2, Menu } from "lucide-react";
+import { ChevronLeft, Menu } from "lucide-react";
 
 const NavButton = ({
     icon: Icon,
@@ -11,13 +11,12 @@ const NavButton = ({
 }) => (
     <button
         onClick={onClick}
-        className={`flex items-center gap-2 px-3 py-1.5 rounded-[4px] text-[12px] font-bold transition-all cursor-pointer ${
-            variant === "outline"
-                ? "border border-[#d1d7dc] text-[#3c4045] hover:bg-[#f7f9fa]"
-                : active
-                  ? "bg-[#f5eeff] border border-[#a435f0] text-[#a435f0]"
-                  : "text-[#3c4045] hover:bg-[#f7f9fa]"
-        }`}
+        className={`flex items-center gap-2 px-3 py-1.5 rounded-[4px] text-[12px] font-bold transition-all cursor-pointer ${variant === "outline"
+            ? "border border-[#d1d7dc] text-[#3c4045] hover:bg-[#f7f9fa]"
+            : active
+                ? "bg-[#f5eeff] border border-[#a435f0] text-[#a435f0]"
+                : "text-[#3c4045] hover:bg-[#f7f9fa]"
+            }`}
     >
         <Icon size={14} />
         <span className="hidden sm:inline">{label}</span>
@@ -59,8 +58,6 @@ const Header = ({ courseTitle, progressPct, onToggleSidebar, sidebarOpen }) => {
                 </div>
 
                 <div className="flex items-center gap-1.5">
-                    <NavButton icon={Star} label="Rating" variant="outline" />
-                    <NavButton icon={Share2} label="Share" variant="outline" />
                     <button
                         onClick={onToggleSidebar}
                         className={`p-2 rounded-[4px] transition-all cursor-pointer ${sidebarOpen ? "bg-[#f5eeff] text-[#a435f0] border border-[#a435f0]" : "text-[#6a6f73] border border-[#d1d7dc] hover:bg-[#f7f9fa]"}`}

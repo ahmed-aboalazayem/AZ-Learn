@@ -1,12 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useCourses } from "../store/courseStore";
 
 export default function Courses() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
     const { courses, deleteCourse } = useCourses();
     const [filter, setFilter] = useState("all");
     const [deleteConfirm, setDeleteConfirm] = useState(null);
+
+    const searchQuery = (searchParams.get("search") || "").toLowerCase();
 
     // Calculate progress for each course
     const coursesWithProgress = courses.map((course) => {
@@ -51,8 +54,17 @@ export default function Courses() {
     });
 
     const filteredCourses = coursesWithProgress.filter((course) => {
-        if (filter === "in-progress") return course.computedStatus === "in-progress";
-        if (filter === "completed") return course.computedStatus === "completed";
+        // Status filter
+        if (filter === "in-progress" && course.computedStatus !== "in-progress") return false;
+        if (filter === "completed" && course.computedStatus !== "completed") return false;
+
+        // Search filter
+        if (searchQuery) {
+            const matchesTitle = course.title.toLowerCase().includes(searchQuery);
+            const matchesAuthor = course.author.toLowerCase().includes(searchQuery);
+            return matchesTitle || matchesAuthor;
+        }
+
         return true;
     });
 

@@ -5,6 +5,16 @@ const navLinks = [
     { icon: "menu_book", label: "My Courses", path: "/dashboard/courses" },
     { icon: "add_circle", label: "Create New", path: "/dashboard/courses/new" },
     {
+        icon: "analytics",
+        label: "Get Course Titles",
+        path: "/dashboard/course-analyzer",
+    },
+    {
+        icon: "compare_arrows",
+        label: "Compare Courses",
+        path: "/dashboard/compare-courses",
+    },
+    {
         icon: "leaderboard",
         label: "Leaderboard",
         path: "/dashboard/leaderboard",

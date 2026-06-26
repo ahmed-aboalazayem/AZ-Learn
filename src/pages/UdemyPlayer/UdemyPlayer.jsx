@@ -145,8 +145,10 @@ const UdemyPlayer = () => {
 
                     <div className="border-t border-[#d1d7dc] bg-white">
                         <CourseTabs
+                            courseId={courseId}
+                            lessonId={currentLesson?.id}
                             video={currentLesson}
-                            instructor={course.author}
+                            course={course}
                         />
                     </div>
                 </main>

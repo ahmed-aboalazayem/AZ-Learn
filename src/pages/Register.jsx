@@ -1,17 +1,57 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useUser } from "../store/userStore.jsx";
 
 export default function Register() {
     const navigate = useNavigate();
+    const { registerUser, loginUser } = useUser();
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
+    const [localError, setLocalError] = useState("");
+    const [loading, setLoading] = useState(false);
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Redirect to dashboard on mock registration
-        navigate("/dashboard");
+        setLocalError("");
+
+        if (password !== confirmPassword) {
+            setLocalError("Passwords do not match.");
+            return;
+        }
+
+        setLoading(true);
+        try {
+            await registerUser(name, email, password);
+            navigate("/dashboard");
+        } catch (err) {
+            setLocalError(err.message || "Failed to create account. Please try again.");
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGoogleRegister = async () => {
+        setLocalError("");
+        setLoading(true);
+        try {
+            const mockGoogleEmail = "google.guest@example.com";
+            const mockGoogleName = "Google Guest";
+            const mockGooglePass = "google";
+            
+            try {
+                await loginUser(mockGoogleEmail, mockGooglePass);
+            } catch {
+                await registerUser(mockGoogleName, mockGoogleEmail, mockGooglePass);
+                await loginUser(mockGoogleEmail, mockGooglePass);
+            }
+            navigate("/dashboard");
+        } catch (err) {
+            setLocalError("Mock Google registration failed.");
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -38,10 +78,18 @@ export default function Register() {
 
                 {/* Form Area */}
                 <div className="flex flex-col gap-4">
+                    {localError && (
+                        <div className="flex items-start gap-3 p-3.5 bg-red-500/10 border border-red-500/25 rounded-lg text-red-500 text-[13px] font-medium leading-snug">
+                            <span className="material-symbols-outlined text-[18px] flex-shrink-0">error</span>
+                            <span>{localError}</span>
+                        </div>
+                    )}
+
                     {/* OAuth */}
                     <button 
-                        onClick={() => navigate("/dashboard")}
-                        className="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container transition-colors duration-200 cursor-pointer"
+                        onClick={handleGoogleRegister}
+                        disabled={loading}
+                        className="w-full flex items-center justify-center gap-3 py-2.5 px-4 bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container transition-colors duration-200 cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         <svg className="w-5 h-5" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
                             <path d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" fill="#EA4335"></path>
@@ -64,60 +112,65 @@ export default function Register() {
                         <div className="flex flex-col gap-1.5">
                             <label className="font-label-md text-label-md text-on-surface" htmlFor="name">Full Name</label>
                             <input 
-                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200" 
+                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200 disabled:opacity-60" 
                                 id="name" 
                                 name="name" 
                                 placeholder="John Doe" 
                                 type="text"
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
+                                disabled={loading}
                                 required
                             />
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="font-label-md text-label-md text-on-surface" htmlFor="email">Email address</label>
                             <input 
-                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200" 
+                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200 disabled:opacity-60" 
                                 id="email" 
                                 name="email" 
                                 placeholder="you@example.com" 
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                disabled={loading}
                                 required
                             />
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="font-label-md text-label-md text-on-surface" htmlFor="password">Password</label>
                             <input 
-                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200" 
+                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200 disabled:opacity-60" 
                                 id="password" 
                                 name="password" 
                                 placeholder="••••••••" 
                                 type="password"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                disabled={loading}
                                 required
                             />
                         </div>
                         <div className="flex flex-col gap-1.5">
                             <label className="font-label-md text-label-md text-on-surface" htmlFor="confirmPassword">Confirm Password</label>
                             <input 
-                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200" 
+                                className="w-full h-11 px-3 rounded-lg border border-outline bg-surface-container-lowest text-on-surface font-body-md text-body-md placeholder:text-outline focus:border-primary focus:ring-2 focus:ring-primary-container focus:outline-none transition-all duration-200 disabled:opacity-60" 
                                 id="confirmPassword" 
                                 name="confirmPassword" 
                                 placeholder="••••••••" 
                                 type="password"
                                 value={confirmPassword}
                                 onChange={(e) => setConfirmPassword(e.target.value)}
+                                disabled={loading}
                                 required
                             />
                         </div>
                         <button 
-                            className="w-full h-11 mt-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors duration-200 flex items-center justify-center shadow-sm cursor-pointer border-none font-semibold" 
+                            className="w-full h-11 mt-2 bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-on-primary-fixed-variant transition-colors duration-200 flex items-center justify-center shadow-sm cursor-pointer border-none font-semibold disabled:opacity-60 disabled:cursor-not-allowed" 
                             type="submit"
+                            disabled={loading}
                         >
-                            Sign Up
+                            {loading ? "Creating Account..." : "Sign Up"}
                         </button>
                     </form>
                 </div>

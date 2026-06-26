@@ -50,7 +50,7 @@ export default function LandingPage() {
                             </div>
                             <h1 className="font-h1 text-h1 text-on-surface mt-2 max-w-2xl lg:text-[56px] lg:leading-[1.1]">
                                 Learn Anything, <br />
-                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">
+                                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-500 to-pink-500">
                                     From A to Z
                                 </span>
                             </h1>
@@ -60,7 +60,7 @@ export default function LandingPage() {
                             <div className="flex flex-wrap items-center gap-4 mt-6">
                                 <Link
                                     to="/register"
-                                    className="font-label-md text-label-md px-6 py-3 rounded-full bg-gradient-to-r from-primary to-secondary text-on-primary shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 no-underline font-semibold"
+                                    className="px-6 py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all duration-200 no-underline font-semibold"
                                 >
                                     Get Started Free
                                 </Link>
@@ -136,18 +136,6 @@ export default function LandingPage() {
                                     <div className="flex">
                                         <span className="text-[#d4d4d4]">{`}`}</span>
                                     </div>
-                                </div>
-                                {/* Decorative Cursor */}
-                                <div className="w-2 h-5 bg-[#569cd6] animate-pulse mt-4 ml-4"></div>
-                            </div>
-                            {/* Decorative floating UI element */}
-                            <div className="absolute bottom-6 left-6 z-20 bg-surface-container-lowest/90 backdrop-blur-sm p-4 rounded-lg shadow-lg border border-outline-variant/50 flex items-center gap-4 animate-pulse">
-                                <div className="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center text-on-primary-container">
-                                    <span className="material-symbols-outlined">auto_awesome</span>
-                                </div>
-                                <div>
-                                    <p className="font-label-sm text-label-sm text-on-surface-variant">Course Generated</p>
-                                    <p className="font-label-md text-label-md text-on-surface">React Mastery in 12s</p>
                                 </div>
                             </div>
                         </div>

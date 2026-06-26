@@ -1,3 +1,5 @@
+import { generateAiSectionTitles } from "./aiService";
+
 const API_KEY = import.meta.env.VITE_YOUTUBE_API_KEY;
 const BASE = "https://www.googleapis.com/youtube/v3";
 
@@ -222,6 +224,21 @@ export async function fetchPlaylistCourse(playlistId, onProgress) {
                     : `Part ${sectionNum}: Videos ${i + 1}–${Math.min(i + CHUNK_SIZE, lessons.length)}`,
             lessons: chunk,
         });
+    }
+
+    // 6. Use AI to rename sections if there are multiple sections
+    if (sections.length > 1 && import.meta.env.VITE_OPENROUTER_API_KEY) {
+        onProgress?.({
+            phase: "ai-structuring",
+            message: "AI is renaming sections based on content...",
+            pct: 90,
+        });
+        const aiTitles = await generateAiSectionTitles(sections, meta.title, meta.description);
+        if (aiTitles && aiTitles.length === sections.length) {
+            sections.forEach((s, idx) => {
+                s.title = aiTitles[idx];
+            });
+        }
     }
 
     onProgress?.({

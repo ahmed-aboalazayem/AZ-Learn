@@ -50,23 +50,23 @@ export default function CreateNew() {
     // Calculate total duration for display
     const totalDuration = fetchedCourse
         ? (() => {
-              let totalSec = 0;
-              fetchedCourse.sections.forEach((s) =>
-                  s.lessons.forEach((l) => {
-                      const parts = l.duration.split(":");
-                      if (parts.length === 2)
-                          totalSec += parseInt(parts[0]) * 60 + parseInt(parts[1]);
-                      if (parts.length === 3)
-                          totalSec +=
-                              parseInt(parts[0]) * 3600 +
-                              parseInt(parts[1]) * 60 +
-                              parseInt(parts[2]);
-                  }),
-              );
-              const h = Math.floor(totalSec / 3600);
-              const m = Math.floor((totalSec % 3600) / 60);
-              return h > 0 ? `${h}h ${m}m` : `${m}m`;
-          })()
+            let totalSec = 0;
+            fetchedCourse.sections.forEach((s) =>
+                s.lessons.forEach((l) => {
+                    const parts = l.duration.split(":");
+                    if (parts.length === 2)
+                        totalSec += parseInt(parts[0]) * 60 + parseInt(parts[1]);
+                    if (parts.length === 3)
+                        totalSec +=
+                            parseInt(parts[0]) * 3600 +
+                            parseInt(parts[1]) * 60 +
+                            parseInt(parts[2]);
+                }),
+            );
+            const h = Math.floor(totalSec / 3600);
+            const m = Math.floor((totalSec % 3600) / 60);
+            return h > 0 ? `${h}h ${m}m` : `${m}m`;
+        })()
         : "";
 
     return (
@@ -96,11 +96,10 @@ export default function CreateNew() {
                 ].map((s) => (
                     <div key={s.num} className="flex flex-col items-center gap-2 bg-surface-container-low px-4">
                         <div
-                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${
-                                step >= s.num
-                                    ? "bg-primary text-on-primary shadow-sm"
-                                    : "bg-surface-container-high text-on-surface-variant border-2 border-surface-container-highest"
-                            }`}
+                            className={`w-10 h-10 rounded-full flex items-center justify-center font-bold text-lg transition-all duration-300 ${step >= s.num
+                                ? "bg-primary text-on-primary shadow-sm"
+                                : "bg-surface-container-high text-on-surface-variant border-2 border-surface-container-highest"
+                                }`}
                         >
                             {s.num}
                         </div>
@@ -114,7 +113,7 @@ export default function CreateNew() {
             </div>
 
             {/* Content Switcher */}
-            <div className="w-full bg-surface-container-lowest rounded-[16px] shadow-soft border border-surface-variant p-8 md:p-10 relative overflow-hidden">
+            <div className="w-full bg-surface-container-lowest rounded-[16px] shadow-soft border border-surface-variant p-8 md:p-10 relative">
                 <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
 
                 {/* STEP 1: Import */}
@@ -132,7 +131,7 @@ export default function CreateNew() {
 
                         <form onSubmit={handleFetch} className="flex flex-col md:flex-row gap-4 items-start md:items-stretch">
                             <div className="relative flex-1 w-full group">
-                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline-variant group-focus-within:text-primary transition-colors">
+                                <span className="material-symbols-outlined absolute left-4 top-1/2 -translate-y-[45%] text-outline-variant group-focus-within:text-primary transition-colors">
                                     link
                                 </span>
                                 <input
@@ -149,6 +148,7 @@ export default function CreateNew() {
                                 />
                             </div>
                             <button
+                                style={{ color: "#000" }}
                                 type="submit"
                                 className="w-full md:w-auto px-8 py-4 rounded-[8px] bg-gradient-to-r from-primary to-surface-tint text-on-primary font-bold shadow-md hover:opacity-90 hover:shadow-lg transition-all flex justify-center items-center gap-2 whitespace-nowrap cursor-pointer border-none"
                             >

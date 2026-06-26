@@ -13,6 +13,8 @@ import Settings from "./pages/Settings";
 import CreateNew from "./pages/CreateNew";
 import Upgrade from "./pages/Upgrade";
 import CoursePlayer from "./pages/CoursePlayer";
+import CourseAnalyzer from "./pages/CourseAnalyzer";
+import CompareCourses from "./pages/CompareCourses";
 
 export const router = createBrowserRouter([
     // 🌍 Public Routes
@@ -56,6 +58,14 @@ export const router = createBrowserRouter([
                         element: <CreateNew />,
                     },
                 ],
+            },
+            {
+                path: "course-analyzer",
+                element: <CourseAnalyzer />,
+            },
+            {
+                path: "compare-courses",
+                element: <CompareCourses />,
             },
             {
                 path: "leaderboard",

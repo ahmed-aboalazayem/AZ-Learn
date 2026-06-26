@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Info, FileText, Layout, User, Globe, Clock, Plus, Trash2 } from 'lucide-react';
+import { useUser } from '../../store/userStore.jsx';
 
 const TabButton = ({ active, icon: Icon, label, onClick }) => (
   <button
@@ -15,27 +16,36 @@ const TabButton = ({ active, icon: Icon, label, onClick }) => (
   </button>
 );
 
-const CourseTabs = ({ video, instructor }) => {
+const getDeterministicStudents = (title) => {
+  if (!title) return "12,500";
+  let hash = 0;
+  for (let i = 0; i < title.length; i++) {
+    hash = title.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const count = Math.abs(hash % 98000) + 1200;
+  return count.toLocaleString();
+};
+
+const CourseTabs = ({ courseId, lessonId, video, course }) => {
   const [activeTab, setActiveTab] = useState('overview');
   const [noteInput, setNoteInput] = useState('');
-  const [notes, setNotes] = useState([]);
+  const { getNotesForLesson, addNote, deleteNote } = useUser();
+
+  const notes = getNotesForLesson(courseId, lessonId);
 
   const handleAddNote = () => {
     if (!noteInput.trim()) return;
-    const newNote = {
-      id: Date.now(),
+    addNote({
       text: noteInput,
-      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      lessonTitle: video.title
-    };
-    setNotes([newNote, ...notes]);
+      lessonTitle: video.title,
+      courseId,
+      lessonId,
+    });
     setNoteInput('');
-    // TODO: Send to API
-    console.log('Saving note to API...', newNote);
   };
 
   const handleDeleteNote = (id) => {
-    setNotes(notes.filter(note => note.id !== id));
+    deleteNote(id);
   };
 
   return (
@@ -62,7 +72,7 @@ const CourseTabs = ({ video, instructor }) => {
               <div className="space-y-1">
                 <p className="text-[11px] font-bold text-[#6a6f73] uppercase tracking-wider">Students</p>
                 <div className="flex items-center gap-2 text-[#1c1d1f] text-sm font-bold">
-                  <User size={14} className="text-[#6a6f73]" /> 1,242,503
+                  <User size={14} className="text-[#6a6f73]" /> {course ? getDeterministicStudents(course.title) : "1,200"}
                 </div>
               </div>
               <div className="space-y-1">
@@ -74,7 +84,7 @@ const CourseTabs = ({ video, instructor }) => {
               <div className="space-y-1">
                 <p className="text-[11px] font-bold text-[#6a6f73] uppercase tracking-wider">Lectures</p>
                 <div className="flex items-center gap-2 text-[#1c1d1f] text-sm font-bold">
-                  <Clock size={14} className="text-[#6a6f73]" /> 422
+                  <Clock size={14} className="text-[#6a6f73]" /> {course ? course.totalLessons : 0}
                 </div>
               </div>
             </div>
@@ -87,14 +97,16 @@ const CourseTabs = ({ video, instructor }) => {
               
               <div className="prose prose-sm max-w-none">
                 <p className="text-lg text-[#1c1d1f] font-medium leading-relaxed">
-                  {/* Placeholder for API Summary */}
-                  Master the foundational concepts of {video.title} in this comprehensive lesson. 
-                  Taught by {instructor}, this section provides deep technical insights and practical examples 
+                  Master the foundational concepts of <strong>{video.title}</strong> in this comprehensive lesson. 
+                  Taught by <strong>{course ? course.author : "the instructor"}</strong>, this section provides deep technical insights and practical examples 
                   to help you build high-performance applications.
                 </p>
-                <p className="mt-4">
-                  (Note: This summary section will be populated dynamically from your API in the next integration step.)
-                </p>
+                {course && course.description && (
+                  <div className="mt-6 border-t border-[#eaecee] pt-6">
+                    <h4 className="text-[16px] font-bold text-[#1c1d1f] mb-3">Course Overview</h4>
+                    <p className="text-sm text-[#6a6f73] leading-relaxed whitespace-pre-wrap">{course.description}</p>
+                  </div>
+                )}
               </div>
             </div>
           </div>
