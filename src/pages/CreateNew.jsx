@@ -205,7 +205,7 @@ export default function CreateNew() {
                             </div>
                             <div className="w-full bg-surface-container-high h-2.5 rounded-full overflow-hidden">
                                 <div
-                                    className="bg-gradient-to-r from-primary to-secondary h-full rounded-full transition-all duration-300"
+                                    className="bg-gradient-to-r from-indigo-500 to-blue-500 h-full rounded-full transition-all duration-300"
                                     style={{ width: `${progressInfo.pct}%` }}
                                 ></div>
                             </div>
@@ -310,6 +310,7 @@ export default function CreateNew() {
                             </button>
                             <button
                                 onClick={handleLaunch}
+                                style={{ color: "#000" }}
                                 className="px-8 py-2.5 rounded-lg bg-gradient-to-r from-primary to-surface-tint text-on-primary font-bold shadow-md hover:opacity-90 hover:shadow-lg transition-all cursor-pointer border-none"
                             >
                                 Launch Course 🚀

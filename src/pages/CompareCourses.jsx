@@ -400,8 +400,8 @@ export default function CompareCourses() {
             {/* Course Previews (rendered once fetched) */}
             {successfullyFetchedCount > 0 && (
                 <div className="flex flex-col gap-6 animate-[fadeIn_0.5s_ease-out]">
-                    <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                        <span className="material-symbols-outlined text-violet-400">library_books</span>
+                    <h3 style={{ color: "#000" }} className="text-lg font-bold text-white flex items-center gap-2">
+                        <span style={{ color: "#000" }} className="material-symbols-outlined text-violet-400">library_books</span>
                         Retrieved Course Outlines ({successfullyFetchedCount})
                     </h3>
 
@@ -412,14 +412,19 @@ export default function CompareCourses() {
                                 const course = item.data;
                                 const topics = course.sections.flatMap(s => s.lessons);
                                 return (
-                                    <div key={idx} className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col h-[350px]">
-                                        <div className="relative h-32 flex-shrink-0 bg-slate-900 border-b border-slate-800">
+                                    <div
+                                        key={idx}
+                                        className="bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-lg flex flex-col h-[550px] w-[350px]"
+                                    >
+                                        <div className="relative h-48 flex-shrink-0 bg-slate-900 border-b border-slate-800">
                                             <img
                                                 src={course.thumbnail}
                                                 alt={course.title}
                                                 className="w-full h-full object-cover opacity-80"
                                             />
+
                                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+
                                             <div className="absolute bottom-3 left-3 right-3">
                                                 <span className="text-[10px] font-extrabold uppercase tracking-wider bg-violet-500/20 text-violet-400 px-2 py-0.5 rounded border border-violet-500/30">
                                                     Course {idx + 1}
@@ -428,21 +433,32 @@ export default function CompareCourses() {
                                         </div>
 
                                         <div className="p-4 flex-1 flex flex-col min-h-0">
-                                            <h4 className="text-[15px] font-bold text-white line-clamp-1 leading-snug" title={course.title}>
+                                            <h4
+                                                className="text-[15px] font-bold text-white line-clamp-1 leading-snug"
+                                                title={course.title}
+                                            >
                                                 {course.title}
                                             </h4>
+
                                             <p className="text-xs text-slate-400 mt-1 flex items-center gap-1">
-                                                <span className="material-symbols-outlined text-[14px]">person</span>
+                                                <span className="material-symbols-outlined text-[14px]">
+                                                    person
+                                                </span>
                                                 {course.author}
                                             </p>
 
                                             <div className="flex gap-4 border-y border-slate-800/50 py-2.5 my-3 text-[11px] text-slate-400 font-medium">
                                                 <span className="flex items-center gap-1">
-                                                    <span className="material-symbols-outlined text-[13px]">format_list_numbered</span>
+                                                    <span className="material-symbols-outlined text-[13px]">
+                                                        format_list_numbered
+                                                    </span>
                                                     {course.sections.length} Sections
                                                 </span>
+
                                                 <span className="flex items-center gap-1">
-                                                    <span className="material-symbols-outlined text-[13px]">play_circle</span>
+                                                    <span className="material-symbols-outlined text-[13px]">
+                                                        play_circle
+                                                    </span>
                                                     {course.totalLessons} Videos
                                                 </span>
                                             </div>
@@ -450,11 +466,17 @@ export default function CompareCourses() {
                                             {/* Scrollable list of titles */}
                                             <div className="flex-1 overflow-y-auto space-y-1.5 pr-1 scrollbar-thin scrollbar-thumb-slate-800">
                                                 {topics.map((topic, tIdx) => (
-                                                    <div key={tIdx} className="text-xs text-slate-400 bg-slate-900/40 border border-slate-900 px-2.5 py-1.5 rounded flex items-center gap-2">
+                                                    <div
+                                                        key={tIdx}
+                                                        className="text-xs text-slate-400 bg-slate-900/40 border border-slate-900 px-2.5 py-1.5 rounded flex items-center gap-2"
+                                                    >
                                                         <span className="font-mono text-slate-600 font-bold flex-shrink-0 w-4 text-right">
                                                             {tIdx + 1}
                                                         </span>
-                                                        <span className="truncate flex-1">{topic.title}</span>
+
+                                                        <span className="truncate flex-1">
+                                                            {topic.title}
+                                                        </span>
                                                     </div>
                                                 ))}
                                             </div>

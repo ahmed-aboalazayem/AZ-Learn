@@ -146,7 +146,7 @@ export default function Courses() {
                                 </div>
                                 <div className="w-full bg-surface-variant h-2 rounded-full overflow-hidden">
                                     <div
-                                        className={`h-full rounded-full ${course.progress === 100 ? "bg-emerald-500" : "bg-gradient-to-r from-[#6C63FF] to-[#3B82F6]"}`}
+                                        className={`h-full rounded-full transition-all duration-300 ${course.progress === 100 ? "bg-emerald-500" : "bg-gradient-to-r from-indigo-500 to-blue-500"}`}
                                         style={{ width: `${course.progress}%` }}
                                     ></div>
                                 </div>
