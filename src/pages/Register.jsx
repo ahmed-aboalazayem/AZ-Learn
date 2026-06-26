@@ -23,10 +23,26 @@ export default function Register() {
 
         setLoading(true);
         try {
+            // --- فحص الـ LocalStorage للتأكد من عدم تكرار الحساب قبل الإرسال ---
+            const currentUsers = JSON.parse(localStorage.getItem("az_users")) || [];
+            const isEmailExist = currentUsers.some(user => user.email === email);
+
+            if (isEmailExist) {
+                setLocalError("You are already registered with this account!");
+                setLoading(false);
+                return;
+            }
+
+            // إذا لم يكن مسجلاً، نتابع عملية الـ Register الطبيعية من الـ Store
             await registerUser(name, email, password);
             navigate("/dashboard");
         } catch (err) {
-            setLocalError(err.message || "Failed to create account. Please try again.");
+            // إذا كان الـ Store يرجع خطأ تكرار أو أي خطأ آخر
+            if (err.message && (err.message.includes("exists") || err.message.includes("already"))) {
+                setLocalError("You are already registered with this account!");
+            } else {
+                setLocalError(err.message || "Failed to create account. Please try again.");
+            }
         } finally {
             setLoading(false);
         }

@@ -14,7 +14,17 @@ export default function Login() {
         e.preventDefault();
         setLocalError("");
         setLoading(true);
+        
         try {
+            // --- فحص ما إذا كان هذا الحساب مسجل دخول بالفعل حالياً ومخزن كـ Active User ---
+            const loggedInUser = JSON.parse(localStorage.getItem("az_logged_in_user"));
+            if (loggedInUser && loggedInUser.email === email) {
+                setLocalError("You are already logged in with this account!");
+                setLoading(false);
+                return;
+            }
+
+            // إذا لم يكن مسجلاً دخول مسبقاً، نتابع عملية الـ Login الطبيعية
             await loginUser(email, password);
             navigate("/dashboard");
         } catch (err) {
