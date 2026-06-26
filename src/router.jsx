@@ -29,6 +29,12 @@ export const router = createBrowserRouter([
         element: <Register />,
     },
 
+    // 🎬 Full-screen Course Player (outside DashboardLayout)
+    {
+        path: "/dashboard/courses/:id",
+        element: <CoursePlayer />,
+    },
+
     // 🔐 Dashboard Routes
     {
         path: "/dashboard",
@@ -48,10 +54,6 @@ export const router = createBrowserRouter([
                     {
                         path: "new",
                         element: <CreateNew />,
-                    },
-                    {
-                        path: ":id",
-                        element: <CoursePlayer />,
                     },
                 ],
             },
